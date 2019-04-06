@@ -1,0 +1,36 @@
+{
+  "name": "@miroculus/config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "test:watch": "nodemon -x mocha",
+    "standard": "standard",
+    "standard:fix": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miroculus/config.git"
+  },
+  "keywords": [
+    "config",
+    "environement",
+    "variables"
+  ],
+  "author": "mjlescano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miroculus/config/issues"
+  },
+  "homepage": "https://github.com/miroculus/config#readme",
+  "dependencies": {
+    "dotenv": "7.0.0"
+  },
+  "devDependencies": {
+    "mocha": "6.0.2",
+    "nodemon": "1.18.10",
+    "pre-commit": "1.2.2",
+    "standard": "12.0.1"
+  }
+}
