@@ -3,6 +3,7 @@ const path = require('path')
 const dotenv = require('dotenv')
 
 const isNumber = /^-?([1-9][0-9]*|0)$/
+const booleans = ['true', 'false']
 
 const invalidValue = (key, val) =>
   new Error(`Invalid config value for "${key}": ${val}`)
@@ -30,7 +31,11 @@ const parse = (key, val, attrs) => {
     return n
   }
 
-  if (type === 'boolean') return val.toLowerCase() === 'true'
+  if (type === 'boolean') {
+    const b = val.toLowerCase()
+    if (!booleans.includes(b)) throw invalidValue(key, val)
+    return b === 'true'
+  }
 
   if (type === 'json') return JSON.parse(val)
 

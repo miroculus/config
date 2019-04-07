@@ -84,6 +84,30 @@ describe('load config from an object', () => {
       schema: { VAL: 'number' },
       given: { VAL: 'another' },
       expected: Error
+    },
+    {
+      desc: 'not setted nor required boolean should be undefined',
+      schema: { VAL: 'boolean' },
+      given: {},
+      expected: { VAL: undefined }
+    },
+    {
+      desc: 'boolean values not written as true should throw an error',
+      schema: { VAL: 'boolean' },
+      given: { VAL: 'truee' },
+      expected: Error
+    },
+    {
+      desc: 'boolean values not written as false should throw an error',
+      schema: { VAL: 'boolean' },
+      given: { VAL: 'fals' },
+      expected: Error
+    },
+    {
+      desc: 'boolean values can be written using uppercase',
+      schema: { VAL: 'boolean' },
+      given: { VAL: 'True' },
+      expected: { VAL: true }
     }
   ]
 
