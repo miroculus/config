@@ -153,9 +153,21 @@ describe('load config from an object', () => {
     },
     {
       desc: 'should parse a custom array and trim it',
-      schema: { VAL: { type: 'array' } },
+      schema: { VAL: 'array' },
       given: { VAL: 'a, b, c' },
       expected: { VAL: ['a', 'b', 'c'] }
+    },
+    {
+      desc: 'should parse a custom array with empty string as an empty array',
+      schema: { VAL: 'array' },
+      given: { VAL: '' },
+      expected: { VAL: [] }
+    },
+    {
+      desc: 'should parse an undefined array as an empty array',
+      schema: { VAL: 'array' },
+      given: {},
+      expected: { VAL: [] }
     }
   ]
 
