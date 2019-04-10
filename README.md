@@ -86,6 +86,10 @@ it has a `default` value. This are all the possible options:
     * `VAL=["an", "array", "of", "strings"]`
     * `VAL={}`
     * `VAL=[]`
+* `array`
+  * Array values are a custom type for defining an array of `string`s.
+  * Is the same as defining `type: 'string'` but the value will be splitted and trimmed using `val.split(',').map((str) => str.trim())`
+  * For exmple `VAL=a, b, c` will be parsed to `config.VAL = ['a', 'b', 'c']`
 
 ### **`Schema.default`**
 

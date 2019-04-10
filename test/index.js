@@ -144,6 +144,18 @@ describe('load config from an object', () => {
       schema: { VAL: { type: 'number', enum: [2, 4, 6] } },
       given: { VAL: '1' },
       expected: Error
+    },
+    {
+      desc: 'should parse a custom array string',
+      schema: { VAL: { type: 'array' } },
+      given: { VAL: 'http://localhost:3000,http://localhost:3001,http://localhost:3002' },
+      expected: { VAL: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'] }
+    },
+    {
+      desc: 'should parse a custom array and trim it',
+      schema: { VAL: { type: 'array' } },
+      given: { VAL: 'a, b, c' },
+      expected: { VAL: ['a', 'b', 'c'] }
     }
   ]
 

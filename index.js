@@ -25,6 +25,8 @@ const parse = (key, val, schema) => {
 
   if (type === 'string') return val
 
+  if (type === 'array') return val.split(',').map((str) => str.trim())
+
   if (type === 'number') {
     const n = Number(val)
     if (!isNumber.test(n)) throw invalidValue(key, val)
