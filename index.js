@@ -8,8 +8,8 @@ const booleans = ['true', 'false']
 const invalidValue = (key, val) =>
   new Error(`Invalid config value for "${key}": ${val}`)
 
-const parse = (key, val, attrs) => {
-  const { type, required } = attrs
+const parse = (key, val, schema) => {
+  const { type, required } = schema
 
   if (required === true) {
     if (typeof val !== 'string') throw invalidValue(key, val)
@@ -17,8 +17,8 @@ const parse = (key, val, attrs) => {
     return val
   } else {
     if (val === undefined || val === '') {
-      if (typeof attrs.default === 'function') return attrs.default()
-      return attrs.default
+      if (typeof schema.default === 'function') return schema.default()
+      return schema.default
     }
     if (typeof val !== 'string') throw invalidValue(key, val)
   }
@@ -63,11 +63,35 @@ module.exports = (schema = {}, opts = {}) => {
     Object.assign(given, process.env)
   }
 
-  Object.entries(schema).forEach(([key, attrs]) => {
-    if (typeof attrs === 'string') attrs = { type: attrs }
+  const validationsToRun = []
 
-    config[key] = parse(key, given[key], attrs)
+  Object.entries(schema).forEach(([key, schema]) => {
+    if (typeof schema === 'string') schema = { type: schema }
+
+    const val = parse(key, given[key], schema)
+
+    if (schema.validate) {
+      // Run validations after all values has been parsed so we can validate some
+      // values depending another one.
+      validationsToRun.push(() => {
+        if (typeof schema.validate === 'function') {
+          if (!schema.validate(val, key, config)) {
+            throw new Error(`Value for ${key} configuration does not pass custom validation`)
+          }
+        } else if (schema.validate instanceof RegExp) {
+          if (!schema.validate.test(val)) {
+            throw new Error(`Value for ${key} does not validate format of regex "${schema.validate}"`)
+          }
+        } else {
+          throw new Error(`Invalid validate value for ${key} configuration`)
+        }
+      })
+    }
+
+    config[key] = val
   })
+
+  validationsToRun.forEach((validate) => validate())
 
   return config
 }

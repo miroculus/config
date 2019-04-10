@@ -108,6 +108,30 @@ describe('load config from an object', () => {
       schema: { VAL: 'boolean' },
       given: { VAL: 'True' },
       expected: { VAL: true }
+    },
+    {
+      desc: 'should pass with custom validation',
+      schema: { VAL: { type: 'string', validate: () => true } },
+      given: { VAL: 'str' },
+      expected: { VAL: 'str' }
+    },
+    {
+      desc: 'should throw with not passing custom validation',
+      schema: { VAL: { type: 'string', validate: () => false } },
+      given: { VAL: 'str' },
+      expected: Error
+    },
+    {
+      desc: 'should validate using a regex',
+      schema: { VAL: { type: 'string', validate: /[a-z]+/ } },
+      given: { VAL: 'abc' },
+      expected: { VAL: 'abc' }
+    },
+    {
+      desc: 'should throw an error with not passing regex validator',
+      schema: { VAL: { type: 'string', validate: /[a-z]+/ } },
+      given: { VAL: '123' },
+      expected: Error
     }
   ]
 

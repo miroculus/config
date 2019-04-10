@@ -99,6 +99,18 @@ can take any value to set, or a function that will be executed and the result se
 You can set your value as `required: true` if you want to throw an error when a
 value is not setted, or its setted to an empty value.
 
+### **`Schema.validate`**
+
+This props serves to add a custom validation for the given value. It can be a function
+that should return `true` or `false`, or a `RegExp`. e.g. both of the following validations
+check that the configured value is `1`, `2` or `3`:
+
+```javascript
+module.exports = loadConfig({
+  STRING_VALIDATE: { type: 'number', validate: (val, key, config) => [1, 2, 3].includes(val)},
+  REGEXP_VALIDATE: { type: 'number', validate: /^(1|2|3)$/ }
+})
+```
 
 ## Test
 
