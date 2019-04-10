@@ -132,6 +132,18 @@ describe('load config from an object', () => {
       schema: { VAL: { type: 'string', validate: /[a-z]+/ } },
       given: { VAL: '123' },
       expected: Error
+    },
+    {
+      desc: 'should validate the value is included in the given enum',
+      schema: { VAL: { type: 'number', enum: [2, 4, 6] } },
+      given: { VAL: '2' },
+      expected: { VAL: 2 }
+    },
+    {
+      desc: 'should throw an error if the value is not included in the given enum',
+      schema: { VAL: { type: 'number', enum: [2, 4, 6] } },
+      given: { VAL: '1' },
+      expected: Error
     }
   ]
 

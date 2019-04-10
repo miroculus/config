@@ -112,6 +112,16 @@ module.exports = loadConfig({
 })
 ```
 
+### **`Schema.enum`**
+
+The enum property allows you to set a finite set of value that the given configuration can have. e.g.:
+
+```javascript
+module.exports = loadConfig({
+  LOG_LEVEL: { type: 'string', enum: ['debug', 'info', 'warn', 'error'] }
+})
+```
+
 ## Test
 
 ```bash

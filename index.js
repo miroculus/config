@@ -88,6 +88,16 @@ module.exports = (schema = {}, opts = {}) => {
       })
     }
 
+    if (schema.enum) {
+      if (!Array.isArray(schema.enum)) {
+        throw new Error(`Invalid enum value for ${key} configuration: ${schema.enum}`)
+      }
+
+      if (!schema.enum.includes(val)) {
+        throw new Error(`Value for ${key} should be one of: ${schema.enum.join(', ')}`)
+      }
+    }
+
     config[key] = val
   })
 
