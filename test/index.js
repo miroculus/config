@@ -140,6 +140,12 @@ describe('load config from an object', () => {
       expected: { VAL: 2 }
     },
     {
+      desc: 'should allow to set a default when using enum',
+      schema: { VAL: { type: 'string', default: 'a', enum: ['a', 'b', 'c'] } },
+      given: { VAL: '' },
+      expected: { VAL: 'a' }
+    },
+    {
       desc: 'should throw an error if the value is not included in the given enum',
       schema: { VAL: { type: 'number', enum: [2, 4, 6] } },
       given: { VAL: '1' },
