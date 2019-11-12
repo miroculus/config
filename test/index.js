@@ -146,7 +146,8 @@ describe('load config from an object', () => {
       expected: { VAL: 'a' }
     },
     {
-      desc: 'should throw an error if the value is not included in the given enum',
+      desc:
+        'should throw an error if the value is not included in the given enum',
       schema: { VAL: { type: 'number', enum: [2, 4, 6] } },
       given: { VAL: '1' },
       expected: Error
@@ -154,8 +155,16 @@ describe('load config from an object', () => {
     {
       desc: 'should parse a custom array string',
       schema: { VAL: { type: 'array' } },
-      given: { VAL: 'http://localhost:3000,http://localhost:3001,http://localhost:3002' },
-      expected: { VAL: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'] }
+      given: {
+        VAL: 'http://localhost:3000,http://localhost:3001,http://localhost:3002'
+      },
+      expected: {
+        VAL: [
+          'http://localhost:3000',
+          'http://localhost:3001',
+          'http://localhost:3002'
+        ]
+      }
     },
     {
       desc: 'should parse a custom array and trim it',
@@ -192,6 +201,32 @@ describe('load config from an object', () => {
         const result = load()
         deepStrictEqual(result, expected)
       }
+    })
+  })
+
+  it('should throw an error when trying to get an unexistant config key or modify the config', () => {
+    const result = loadConfig(
+      { VAL: 'string' },
+      {
+        fromEnvFile: false,
+        fromProcessEnv: false,
+        envObject: { VAL: 'the-val' }
+      }
+    )
+
+    deepStrictEqual(result.VAL, 'the-val')
+
+    // Cannot get an unconfigured key
+    throws(() => result.VLA)
+
+    // cannot modify an existent value
+    throws(() => {
+      result.VAL = 123
+    })
+
+    // cannot assign a new config value
+    throws(() => {
+      result.NEW_VAL = 123
     })
   })
 })

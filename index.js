@@ -5,6 +5,22 @@ const dotenv = require('dotenv')
 const isNumber = /^-?([1-9][0-9]*|0)$/
 const booleans = ['true', 'false']
 
+const hasOwnProperty = (obj, key) =>
+  Object.prototype.hasOwnProperty.call(obj, key)
+
+// These are the symbols used by node's inspect and assertions,
+// which should not be included when checking if an object has it as property.
+// More info: https://stackoverflow.com/questions/6511542/force-javascript-exception-error-when-reading-an-undefined-object-property#comment85913679_45322399
+const reservedSymbols = [
+  'toJSON',
+  'valueOf',
+  'inspect',
+  Symbol.for('nodejs.util.inspect.custom'),
+  Symbol.isConcatSpreadable,
+  Symbol.toStringTag,
+  Symbol.iterator
+]
+
 const invalidValue = (key, val) =>
   new Error(`Invalid config value for "${key}": ${val}`)
 
@@ -26,7 +42,7 @@ const parse = (key, val, schema) => {
 
   if (type === 'string') return val
 
-  if (type === 'array') return val.split(',').map((str) => str.trim())
+  if (type === 'array') return val.split(',').map(str => str.trim())
 
   if (type === 'number') {
     const n = Number(val)
@@ -79,11 +95,15 @@ module.exports = (schema = {}, opts = {}) => {
       validationsToRun.push(() => {
         if (typeof schema.validate === 'function') {
           if (!schema.validate(val, key, config)) {
-            throw new Error(`Value for ${key} configuration does not pass custom validation`)
+            throw new Error(
+              `Value for ${key} configuration does not pass custom validation`
+            )
           }
         } else if (schema.validate instanceof RegExp) {
           if (!schema.validate.test(val)) {
-            throw new Error(`Value for ${key} does not validate format of regex "${schema.validate}"`)
+            throw new Error(
+              `Value for ${key} does not validate format of regex "${schema.validate}"`
+            )
           }
         } else {
           throw new Error(`Invalid validate value for ${key} configuration`)
@@ -93,18 +113,38 @@ module.exports = (schema = {}, opts = {}) => {
 
     if (schema.enum) {
       if (!Array.isArray(schema.enum)) {
-        throw new Error(`Invalid enum value for ${key} configuration: ${schema.enum}`)
+        throw new Error(
+          `Invalid enum value for ${key} configuration: ${schema.enum}`
+        )
       }
 
       if (!schema.enum.includes(val)) {
-        throw new Error(`Value for ${key} should be one of: ${schema.enum.join(', ')}`)
+        throw new Error(
+          `Value for ${key} should be one of: ${schema.enum.join(', ')}`
+        )
       }
     }
 
     config[key] = val
   })
 
-  validationsToRun.forEach((validate) => validate())
+  validationsToRun.forEach(validate => validate())
 
-  return config
+  // This Proxy throws an error if trying to access a not configured value.
+  return new Proxy(config, {
+    get (target, prop) {
+      if (
+        !reservedSymbols.includes(prop) &&
+        !hasOwnProperty(target, prop)
+      ) {
+        throw new Error(`Invalid config key "${prop}"`)
+      }
+
+      return target[prop]
+    },
+
+    set (target, prop) {
+      throw new Error(`Cannot modify configuration object key "${prop}"`)
+    }
+  })
 }
