@@ -7,7 +7,6 @@ WORKDIR /src
 COPY package*.json ./
 
 RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > /.npmrc
-RUN npm audit
 RUN npm ci
 RUN rm -f /.npmrc
 
