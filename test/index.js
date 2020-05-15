@@ -203,30 +203,4 @@ describe('load config from an object', () => {
       }
     })
   })
-
-  it('should throw an error when trying to get an unexistant config key or modify the config', () => {
-    const result = loadConfig(
-      { VAL: 'string' },
-      {
-        fromEnvFile: false,
-        fromProcessEnv: false,
-        envObject: { VAL: 'the-val' }
-      }
-    )
-
-    deepStrictEqual(result.VAL, 'the-val')
-
-    // Cannot get an unconfigured key
-    throws(() => result.VLA)
-
-    // cannot modify an existent value
-    throws(() => {
-      result.VAL = 123
-    })
-
-    // cannot assign a new config value
-    throws(() => {
-      result.NEW_VAL = 123
-    })
-  })
 })
