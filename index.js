@@ -141,6 +141,14 @@ module.exports = (schema = {}, opts = {}) => {
       }
 
       return target[prop]
+    },
+
+    set (target, prop, value) {
+      if (!hasOwnProperty(target, prop)) {
+        throw new Error(`Invalid config key "${prop}"`)
+      }
+
+      return target[prop] = value
     }
   })
 }
