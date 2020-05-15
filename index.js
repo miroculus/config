@@ -141,10 +141,6 @@ module.exports = (schema = {}, opts = {}) => {
       }
 
       return target[prop]
-    },
-
-    set (target, prop) {
-      throw new Error(`Cannot modify configuration object key "${prop}"`)
     }
   })
 }
