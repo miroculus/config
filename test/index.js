@@ -203,4 +203,48 @@ describe('load config from an object', () => {
       }
     })
   })
+
+  it('should allow to modify a config value', () => {
+    const result = loadConfig(
+      { VAL: 'string' },
+      {
+        fromEnvFile: false,
+        fromProcessEnv: false,
+        envObject: { VAL: 'the-val' }
+      }
+    )
+
+    result.VAL = 'updated-value'
+
+    deepStrictEqual(result.VAL, 'updated-value')
+  })
+
+  it('should throw an error when trying to get an unexistant config key', () => {
+    const result = loadConfig(
+      { VAL: 'string' },
+      {
+        fromEnvFile: false,
+        fromProcessEnv: false,
+        envObject: { VAL: 'the-val' }
+      }
+    )
+
+    // Cannot get an unconfigured key
+    throws(() => result.VLA)
+  })
+
+  it('should throw an error when trying to set an unexistant config key', () => {
+    const result = loadConfig(
+      { VAL: 'string' },
+      {
+        fromEnvFile: false,
+        fromProcessEnv: false,
+        envObject: { VAL: 'the-val' }
+      }
+    )
+
+    throws(() => {
+      result.NEW_VAL = 123
+    })
+  })
 })
