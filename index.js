@@ -34,7 +34,7 @@ const parse = (key, val, schema) => {
   } else {
     if (val === undefined || val === '') {
       if (typeof schema.default === 'function') return schema.default()
-      if (type === 'array') return []
+      if (type === 'array') return schema.default || []
       return schema.default
     }
     if (typeof val !== 'string') throw invalidValue(key, val)
