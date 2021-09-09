@@ -74,6 +74,12 @@ describe('load config from an object', () => {
       expected: { VAL: 'default-value' }
     },
     {
+      desc: 'return a default value for array',
+      schema: { VAL: { type: 'array', default: ['a', 'b', 'c'] } },
+      given: { VAL: '' },
+      expected: { VAL: ['a', 'b', 'c'] }
+    },
+    {
       desc: 'throw on missing required value',
       schema: { STRING: { type: 'string', required: true } },
       given: {},
