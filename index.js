@@ -148,7 +148,7 @@ module.exports = (schema = {}, opts = {}) => {
         throw new Error(`Invalid config key "${prop}"`)
       }
 
-      return target[prop] = value
+      return (target[prop] = value)
     }
   })
 }
